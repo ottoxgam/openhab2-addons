@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<thing:thing-descriptions bindingId="purpleair"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:thing="https://openhab.org/schemas/thing-description/v1.0.0"
+	xsi:schemaLocation="https://openhab.org/schemas/thing-description/v1.0.0 https://openhab.org/schemas/thing-description-1.0.0.xsd">
+	<thing-type id="Station">
+		<label>Purpleair Sensor</label>
+		<description>Purpleir sensor</description>
+
+		<channels>
+            <channel id="pm1value" typeId="pm1value" />
+            <channel id="pm25value" typeId="pm25value" />
+            <channel id="pm10value" typeId="pm10value" />
+            <channel id="rssi" typeId="rssi" />
+            <channel id="uptime" typeId="lastseen" />
+            <channel id="temperature" typeId="temperature" />
+            <channel id="humidity" typeId="humidity" />
+            <channel id="pressure" typeId="pressure" />
+            <channel id="label" typeId="label" />
+            <channel id="latitude" typeId="latitude" />
+            <channel id="longitude" typeId="longitude" />
+		</channels>
+
+		<config-description>
+            <parameter name="stationId" type="text" required="true">
+                <label>STATION ID</label>
+                <description>ID of your station from https://www.purpleair.com/json</description>
+                <default></default>
+            </parameter>
+
+            <parameter name="refreshInterval" type="integer" min="30">
+                <label>Refresh Interval</label>
+                <description>States how often a refresh shall occur (in s).</description>
+                <default>60</default>
+            </parameter>
+		</config-description>
+
+	</thing-type>
+    <channel-type id="pm1value">
+        <item-type>Number</item-type>
+        <label>PM1.0</label>
+        <description>PM1.0 (CF=ATM) ug/m3</description>
+        <state readOnly="true" pattern="%.2f ug/m3"></state>
+    </channel-type>
+    <channel-type id="pm25value">
+        <item-type>Number</item-type>
+        <label>PM2.5</label>
+        <description>PM2.5 (CF=1) ug/m3 This is the field to use for PM2.5</description>
+        <state readOnly="true" pattern="%.2f ug/m3"></state>
+    </channel-type>
+    <channel-type id="pm10value">
+        <item-type>Number</item-type>
+        <label>PM10</label>
+        <description>PM10.0 (CF=ATM) ug/m3</description>
+        <state readOnly="true" pattern="%.2f ug/m3"></state>
+    </channel-type>
+    <channel-type id="rssi">
+        <item-type>Number</item-type>
+        <label>RSSI</label>
+        <description>RSSI of the sensor</description>
+        <state readOnly="true" pattern="%d"></state>
+    </channel-type>
+    <channel-type id="lastseen">
+        <item-type>Number</item-type>
+        <label>Last Seen</label>
+        <description>The timestamp of the last PurpleAir update.</description>
+        <state readOnly="true" pattern="%d"></state>
+    </channel-type>
+    <channel-type id="temperature">
+        <item-type>Number</item-type>
+        <label>Temperature</label>
+        <description>Current Temperature</description>
+        <state readOnly="true" pattern="%d °F"></state>
+    </channel-type>
+    <channel-type id="humidity">
+        <item-type>Number</item-type>
+        <label>Humidity</label>
+        <description>Current Humidity</description>
+        <state readOnly="true" pattern="%d %%"></state>
+    </channel-type>
+    <channel-type id="pressure">
+        <item-type>Number</item-type>
+        <label>pressure</label>
+        <description>Current Pressure</description>
+        <state readOnly="true" pattern="%d mb"></state>
+    </channel-type>
+    <channel-type id="label">
+        <item-type>String</item-type>
+        <label>Station Name</label>
+        <description>Name of the Purple Air Sensor</description>
+        <state readOnly="true" pattern="%s"></state>
+    </channel-type>
+    <channel-type id="latitude">
+        <item-type>Number</item-type>
+        <label>Latitude</label>
+        <description>Latitude of the Purple Air Sensor</description>
+        <state readOnly="true" pattern="%.6f"></state>
+    </channel-type>   
+    <channel-type id="longitude">
+        <item-type>Number</item-type>
+        <label>Longitude</label>
+        <description>Longitude of the Purple Air Sensor</description>
+        <state readOnly="true" pattern="%.6f"></state>
+    </channel-type>         
+
+</thing:thing-descriptions>
