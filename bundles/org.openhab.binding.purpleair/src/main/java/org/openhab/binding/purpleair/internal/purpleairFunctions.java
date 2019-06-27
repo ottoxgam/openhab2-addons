@@ -100,7 +100,7 @@ public class purpleairFunctions {
         if (Double.isNaN(Double.parseDouble(Float.toString(pm)))) {
             return 0;
         }
-        if (pm == null) {
+        if ((Float.toString(pm)) == null) {
             return 0;
         }
         if (pm < 0) {
