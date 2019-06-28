@@ -10,6 +10,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
+
+/**
+ * The {@link purpleairConfig} class contains fields mapping thing configuration parameters.
+ *
+ * @author Zack Lapinski - Initial contribution
+ */
 package org.openhab.binding.purpleair.internal;
 
 public class purpleairFunctions {
