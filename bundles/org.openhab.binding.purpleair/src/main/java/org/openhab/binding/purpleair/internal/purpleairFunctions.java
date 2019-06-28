@@ -150,7 +150,7 @@ public class purpleairFunctions {
 
     }
 
-    public String getAQIDescription(int aqi) {
+    public static String getAQIDescription(float aqi) {
         if (aqi >= 401) {
             return "Hazardous";
         } else if (aqi >= 301) {

@@ -35,6 +35,7 @@ import org.eclipse.smarthome.io.net.http.HttpUtil;
 import org.openhab.binding.purpleair.internal.purpleairBindingConstants;
 import org.openhab.binding.purpleair.internal.purpleairChannel;
 import org.openhab.binding.purpleair.internal.purpleairConfig;
+import org.openhab.binding.purpleair.internal.purpleairFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,6 +56,7 @@ public class purpleairHandler extends BaseThingHandler {
 
     private static Object THINGSPEAKPRIMARYID = null;
     private static Object THINGSPEAK_PRIMARY_ID_READ_KEY = null;
+    private static Object PM25VAL = null;
     private Logger logger = LoggerFactory.getLogger(purpleairHandler.class);
     private purpleairConfig config;
 
@@ -107,6 +109,20 @@ public class purpleairHandler extends BaseThingHandler {
                 logger.warn("Error refreshing source {}: {}", getThing().getUID(), e);
             }
         }, 0, config.refreshInterval < 15 ? 15 : config.refreshInterval, TimeUnit.SECONDS); // Minimum interval is 15 s
+        scheduler.scheduleWithFixedDelay(() -> {
+            logger.debug("Running AQI calculations.");
+            try {
+                refreshAQI();
+            } catch (IOException e) {
+                logger.debug("Error reading response from thingspeak: {}", e);
+                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
+                        "Communication error. Please retry later.");
+            } catch (JsonSyntaxException je) {
+                logger.warn("Invalid JSON when refreshing source {}: {}", getThing().getUID(), je);
+            } catch (Exception e) {
+                logger.warn("Error refreshing source {}: {}", getThing().getUID(), e);
+            }
+        }, 0, config.refreshInterval < 15 ? 15 : config.refreshInterval, TimeUnit.SECONDS); // Minimum interval is 15 s
 
     }
 
@@ -126,6 +142,7 @@ public class purpleairHandler extends BaseThingHandler {
         JsonObject sensorAjson = json0.getAsJsonObject();
         THINGSPEAKPRIMARYID = sensorAjson.get("THINGSPEAK_PRIMARY_ID").getAsString();
         THINGSPEAK_PRIMARY_ID_READ_KEY = sensorAjson.get("THINGSPEAK_PRIMARY_ID_READ_KEY").getAsString();
+        PM25VAL = sensorAjson.get("PM2_5Value").getAsFloat();
 
         // Check whether the data is well-formed
         if (sensorAjson.has(purpleairBindingConstants.PURPLEAIR_JSON_ROOT)) {
@@ -188,6 +205,16 @@ public class purpleairHandler extends BaseThingHandler {
         } else {
             logger.warn("Data retrieval failed, no data returned {}", response);
         }
+    }
+
+    public void refreshAQI() throws Exception {
+        Number aqi = purpleairFunctions.aqiFromPM((float) PM25VAL);
+        String aqidisc = purpleairFunctions.getAQIDescription((float) aqi);
+        String aqimess = purpleairFunctions.getAQIMessage((float) aqi);
+        updateState("aqi", new DecimalType((BigDecimal) aqi));
+        updateState("aqidescription", new StringType(aqidisc));
+        updateState("aqimessage", new StringType(aqimess));
+
     }
 
     private State getState(String value, purpleairChannel type) {
