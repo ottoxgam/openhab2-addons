@@ -55,8 +55,11 @@ public class purpleairBindingConstants {
     public static final String CHANNEL_HUMIDITY = "humidity";
     public static final String CHANNEL_PRESSURE = "pressure";
     public static final String CHANNEL_LABEL = "Label";
-    public static final String CHANNEL_LAT = "Lat";
-    public static final String CHANNEL_LON = "Lon";
+    public static final String CHANNEL_LAT = "Latitude";
+    public static final String CHANNEL_LON = "Longitude";
+    public static final String CHANNEL_AQI = "aqi";
+    public static final String CHANNEL_AQIDESCRIPTION = "aqidescription";
+    public static final String CHANNEL_AQIMESSAGE = "aqimessage";
 
     // Channel Type
     public static final String CHANNEL_TYPE_PM1VALUE = "number";
@@ -72,7 +75,7 @@ public class purpleairBindingConstants {
     public static final String CHANNEL_TYPE_LON = "number";
     public static final String CHANNEL_TYPE_AQI = "NUMBER";
     public static final String CHANNEL_TYPE_AQIDESCRIPTION = "string";
-    public static final String CHANNEL_TRYPE_AQIMESSAGE = "string";
+    public static final String CHANNEL_TYPE_AQIMESSAGE = "string";
 
     // Some basic constants (JSON ID)
     public static final String PURPLEAIR_JSON_ROOT = "ID";

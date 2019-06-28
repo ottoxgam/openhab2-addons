@@ -208,13 +208,12 @@ public class purpleairHandler extends BaseThingHandler {
     }
 
     public void refreshAQI() throws Exception {
-        Number aqi = purpleairFunctions.aqiFromPM((float) PM25VAL);
-        String aqidisc = purpleairFunctions.getAQIDescription((float) aqi);
-        String aqimess = purpleairFunctions.getAQIMessage((float) aqi);
-        updateState("aqi", new DecimalType((BigDecimal) aqi));
+        Number aqi = purpleairFunctions.aqiFromPM((Float) (PM25VAL));
+        String aqidisc = purpleairFunctions.getAQIDescription(aqi.intValue());
+        String aqimess = purpleairFunctions.getAQIMessage(aqi.floatValue());
+        updateState("aqi", new DecimalType(aqi.intValue()));
         updateState("aqidescription", new StringType(aqidisc));
         updateState("aqimessage", new StringType(aqimess));
-
     }
 
     private State getState(String value, purpleairChannel type) {

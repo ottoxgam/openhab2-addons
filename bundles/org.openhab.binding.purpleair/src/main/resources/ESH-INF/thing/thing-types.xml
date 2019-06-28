@@ -19,6 +19,10 @@
             <channel id="label" typeId="label" />
             <channel id="latitude" typeId="latitude" />
             <channel id="longitude" typeId="longitude" />
+            <channel id="aqi" typeId="aqi" />
+            <channel id="aqidescription" typeId="aqidescription" />            
+            <channel id="aqimessage" typeId="aqimessage" />
+            
 		</channels>
 
 		<config-description>
@@ -102,5 +106,23 @@
         <description>Longitude of the Purple Air Sensor</description>
         <state readOnly="true" pattern="%.6f"></state>
     </channel-type>         
+    <channel-type id="aqi">
+        <item-type>Number</item-type>
+        <label>Air Quality Index (AQI)</label>
+        <description>Longitude of the Purple Air Sensor</description>
+        <state readOnly="true" pattern="%f"></state>
+    </channel-type>     
+    <channel-type id="aqidescription">
+        <item-type>String</item-type>
+        <label>AQI Description</label>
+        <description>A short description of the provided AQI</description>
+        <state readOnly="true" pattern="%s"></state>
+    </channel-type>     
+    <channel-type id="aqimessage">
+        <item-type>String</item-type>
+        <label>AQI Message</label>
+        <description>What the provided AQI means (a longer description)</description>
+        <state readOnly="true" pattern="%s"></state>
+    </channel-type> 
 
 </thing:thing-descriptions>
