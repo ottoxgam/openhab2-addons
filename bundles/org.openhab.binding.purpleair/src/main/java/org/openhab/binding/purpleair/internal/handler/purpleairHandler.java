@@ -36,6 +36,7 @@ import org.openhab.binding.purpleair.internal.purpleairBindingConstants;
 import org.openhab.binding.purpleair.internal.purpleairChannel;
 import org.openhab.binding.purpleair.internal.purpleairConfig;
 import org.openhab.binding.purpleair.internal.purpleairFunctions;
+import org.openhab.binding.purpleair.internal.thingspeakPri;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -128,7 +129,7 @@ public class purpleairHandler extends BaseThingHandler {
 
     public void refreshpurpleair() throws Exception {
         // Get the JSON - somehow
-        logger.trace("Starting refresh handler");
+        logger.trace("Starting purpleair refresh handler");
         String httpMethod = "GET";
         String url = "https://www.purpleair.com/json?show=" + config.stationId;
         logger.debug("Attempting to load data from {}", url);
@@ -151,7 +152,7 @@ public class purpleairHandler extends BaseThingHandler {
                 if (sensorAjson.has(channelConfig.getIndex())) {
                     String value = sensorAjson.get(channelConfig.getIndex()).getAsString();
                     Channel channel = getThing().getChannel(channelConfig.getId());
-                    State state = getState(value, channelConfig);
+                    State state = getpurpleState(value, channelConfig);
                     if (channel != null) {
                         logger.trace("Update channel state: {}", state);
                         updateState(channel.getUID(), state);
@@ -170,7 +171,7 @@ public class purpleairHandler extends BaseThingHandler {
 
     private void refreshthingspeak() throws Exception {
         // Get the JSON - somehow
-        logger.trace("Starting refresh handler");
+        logger.trace("Starting thingspeak refresh handler");
         String httpMethod = "GET";
         String url = "https://api.thingspeak.com/channels/" + THINGSPEAKPRIMARYID + "/feeds.json?api_key="
                 + THINGSPEAK_PRIMARY_ID_READ_KEY + "&results=1&";
@@ -181,6 +182,7 @@ public class purpleairHandler extends BaseThingHandler {
 
         JsonArray jsonarr = thingspeakData.getAsJsonArray("feeds");
         JsonElement json0 = jsonarr.get(0);
+        // JsonElement json1 = jsonarr.get(1);
         JsonObject thingspeakjson = json0.getAsJsonObject();
 
         logger.debug("ThingspeakID = {}", THINGSPEAKPRIMARYID);
@@ -189,11 +191,11 @@ public class purpleairHandler extends BaseThingHandler {
         // Check whether the data is well-formed
         if (thingspeakjson.has(purpleairBindingConstants.THINGSPEAK_JSON_ROOT)) {
             logger.trace("Attempting to read data");
-            for (purpleairChannel channelConfig : purpleairChannel.values()) {
+            for (thingspeakPri channelConfig : thingspeakPri.values()) {
                 if (thingspeakjson.has(channelConfig.getIndex())) {
                     String value = thingspeakjson.get(channelConfig.getIndex()).getAsString();
                     Channel channel = getThing().getChannel(channelConfig.getId());
-                    State state = getState(value, channelConfig);
+                    State state = getThingPriState(value, channelConfig);
                     if (channel != null) {
                         logger.trace("Update channel state: {}", state);
                         updateState(channel.getUID(), state);
@@ -216,7 +218,7 @@ public class purpleairHandler extends BaseThingHandler {
         updateState("aqimessage", new StringType(aqimess));
     }
 
-    private State getState(String value, purpleairChannel type) {
+    private State getpurpleState(String value, purpleairChannel type) {
         switch (type) {
             // Only DateTime channel
             case CHANNEL_LASTSEEN:
@@ -246,6 +248,21 @@ public class purpleairHandler extends BaseThingHandler {
                     logger.warn("Parsing label failed: {}. Returning nothing", e);
                     return UnDefType.UNDEF;
                 }
+            default:
+                try {
+                    logger.trace("Parsing number {}", value);
+                    return new DecimalType(new BigDecimal(value));
+                } catch (NumberFormatException e) {
+                    // Log a warning and return UNDEF
+                    logger.warn("Parsing number failed: {}. Returning nothing", e);
+                    return UnDefType.UNDEF;
+                }
+        }
+    }
+
+    private State getThingPriState(String value, thingspeakPri type) {
+        switch (type) {
+
             default:
                 try {
                     logger.trace("Parsing number {}", value);
